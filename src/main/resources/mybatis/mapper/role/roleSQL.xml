@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="role">
+	<resultMap type="role" id="roleResult">
+		<result property="id" 					column="id"/>
+		<result property="name" 				column="name"/>
+		<result property="type" 				column="type"/>
+		<result property="description" 			column="description"/>
+		<result property="grantedAuthority" 	column="granted_authority"/>
+		<result property="createTime" 			column="create_time"/>
+		<result property="updateTime" 			column="update_time"/>
+	</resultMap>
+	<select id="query" parameterType="java.util.HashMap" resultMap="roleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `type`,
+			  `description`,
+			  `granted_authority`,
+			  `create_time`,
+			  `update_time`
+			FROM `role`
+		]]>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(`id`) FROM `role`
+		]]>
+	</select>
+	<select id="queryByRoleId" parameterType="java.lang.Integer" resultMap="roleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `type`,
+			  `description`,
+			  `granted_authority`,
+			  `create_time`,
+			  `update_time`
+			FROM `role` WHERE `id` = #{roleId}
+		]]>
+	</select>
+	<select id="queryByRoleName" parameterType="java.lang.String" resultMap="roleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `type`,
+			  `description`,
+			  `granted_authority`,
+			  `create_time`,
+			  `update_time`
+			FROM `role` WHERE `name` = #{roleName}
+		]]>
+	</select>
+	<select id="queryByUserId" parameterType="java.lang.Integer" resultMap="roleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `type`,
+			  `description`,
+			  `granted_authority`,
+			  `create_time`,
+			  `update_time`
+			FROM `role` WHERE `id` IN (
+			   SELECT `role_id` FROM rel_employee_role WHERE `emp_id` = #{userId}
+			)
+		]]>
+	</select>
+	<select id="queryByGroupId" parameterType="java.lang.Integer" resultMap="roleResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `type`,
+			  `description`,
+			  `granted_authority`,
+			  `create_time`,
+			  `update_time`
+			FROM `role` WHERE `id` IN (
+			   SELECT `role_id` FROM `rel_employee_group_role` WHERE `group_id` = #{groupId}
+			)
+		]]>
+	</select>
+	<insert id="insert" parameterType="role">
+		<![CDATA[
+			`insert into `role`
+            (
+             `name`,
+             `type`,
+             `description`,
+             `granted_authority`,
+             `createTime`)
+			values (#{name},
+			        #{type},
+			        #{description},
+			        #{grantedAuthority},
+			        #{createTime})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<update id="update" parameterType="role">
+		<![CDATA[
+			UPDATE `role`
+			SET 
+			  `name` = #{name},
+			  `type` = #{type},
+			  `description` = #{description},
+			  `granted_authority` = #{grantedAuthority},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<delete id="delete" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `role` WHERE `id` = #{roleId}
+		]]>
+	</delete>
+	<delete id="deleteRelUserByRoleId" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `rel_employee_role` WHERE `role_id` = #{roleId}
+		]]>
+	</delete>
+	<delete id="deleteRelGroupByRoleId" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `rel_employee_group_role` WHERE `role_id` = #{roleId}
+		]]>
+	</delete>
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userGroup">
+	<resultMap type="userGroup" id="userGroupResult">
+		<result property="id" 			column="id"/>
+		<result property="name" 		column="name"/>
+		<result property="description" 	column="description"/>
+		<result property="createTime" 	column="create_time"/>
+		<result property="updateTime" 	column="update_time"/>
+	</resultMap>
+	<select id="query" parameterType="java.util.HashMap" resultMap="userGroupResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `description`,
+			  `create_time`,
+			  `update_time`
+			FROM `employee_group`
+		]]>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(`id`) FROM `employee_group`
+		]]>
+	</select>
+	<select id="queryByUserId" parameterType="java.lang.Integer" resultMap="userGroupResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `description`,
+			  `create_time`,
+			  `update_time`
+			FROM `employee_group` WHERE `id` IN (
+				SELECT `group_id` FROM `rel_employee_group` WHERE `emp_id` = #{userId}
+			)
+		]]>
+	</select>
+	<select id="queryByGroupId" parameterType="java.lang.Integer" resultMap="userGroupResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `description`,
+			  `create_time`,
+			  `update_time`
+			FROM `employee_group` WHERE `id` = #{groupId}
+		]]>
+	</select>
+	<select id="queryByGroupName" parameterType="java.lang.String" resultMap="userGroupResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `description`,
+			  `create_time`,
+			  `update_time`
+			FROM `employee_group` WHERE `name` = #{groupName}
+		]]>
+	</select>
+	<insert id="insert" parameterType="userGroup">
+		<![CDATA[
+			INSERT INTO `employee_group`
+            (`name`,
+             `description`,
+             `create_time`)
+			VALUES (#{name},
+			        #{description},
+			        #{createTime})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	<update id="update" parameterType="userGroup">
+		<![CDATA[
+			UPDATE `employee_group`
+			SET
+			  `name` = #{name},
+			  `description` = #{description},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id}
+		]]>
+	</update>
+	<delete id="delete" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `employee_group` WHERE `id` = #{id}
+		]]>
+	</delete>
+	<insert id="insertRelRole" parameterType="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO `rel_employee_group_role` (`group_id`, `role_id`) VALUES (#{groupId}, #{roleId})
+		]]>
+	</insert>
+	<delete id="deleteRelRoleByGroupId" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `rel_employee_group_role` WHERE `group_id` = #{groupId}
+		]]>
+	</delete>
+	<insert id="insertRelUser" parameterType="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO `rel_employee_group` (`group_id`, `emp_id`) VALUES (#{groupId}, #{userId})
+		]]>
+	</insert>
+	<delete id="deleteRelUserByGroupId" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM `rel_employee_group` WHERE `group_id` = #{groupId}
+		]]>
+	</delete>
+</mapper>
