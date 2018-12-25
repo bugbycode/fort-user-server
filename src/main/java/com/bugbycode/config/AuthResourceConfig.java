@@ -56,12 +56,12 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         		"USER_GROUP_DELETE","USER_GROUP_INSERT")
         
         //角色管理
-        .antMatchers("/role/update").hasRole("ROLE_UPDATE") //修改角色权限
-        .antMatchers("/role/insert").hasRole("ROLE_INSERT") //添加角色权限
-        .antMatchers("/role/delete").hasRole("ROLE_DELETE")  //删除角色权限
-        .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLE_UPDATE","ROLE_INSERT","ROLE_DELETE")
+        .antMatchers("/role/update").hasRole("ROLES_UPDATE") //修改角色权限
+        .antMatchers("/role/insert").hasRole("ROLES_INSERT") //添加角色权限
+        .antMatchers("/role/delete").hasRole("ROLES_DELETE")  //删除角色权限
+        .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
-        .hasAnyRole("ROLE_QUERY","ROLE_UPDATE","ROLE_INSERT","ROLE_DELETE")
+        .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         ;
     }
 }
