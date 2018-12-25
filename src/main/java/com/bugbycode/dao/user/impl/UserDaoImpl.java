@@ -79,4 +79,20 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 	public void deleteRelGroupByUserId(int userId) {
 		getSqlSession().delete("user.deleteRelGroupByUserId", userId);
 	}
+
+	@Override
+	public int checkRelRole(int userId, int roleId) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("userId", userId);
+		param.put("roleId", roleId);
+		return getSqlSession().selectOne("user.checkRelRole", param);
+	}
+
+	@Override
+	public int checkRelGroup(int userId, int groupId) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("userId", userId);
+		param.put("groupId", groupId);
+		return getSqlSession().selectOne("user.checkRelGroup", param);
+	}
 }

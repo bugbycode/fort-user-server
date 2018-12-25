@@ -26,7 +26,7 @@ public interface RoleService {
 	
 	public void delete(int roleId);
 	
-	public void deleteRelUserByRoleId(int userId);
+	public void deleteRelUserByRoleId(int roleId);
 	
 	public void deleteRelGroupByRoleId(int roleId);
 }

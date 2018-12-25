@@ -1,4 +1,4 @@
-package com.bugbycode.controller.role;
+package com.bugbycode.controller.user;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,25 +11,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bugbycode.module.role.Role;
-import com.bugbycode.service.role.RoleService;
+import com.bugbycode.module.user.UserGroup;
+import com.bugbycode.service.user.UserGroupService;
 import com.util.StringUtil;
 import com.util.page.SearchResult;
 
 /**
- * 角色信息管理API
+ * 用户分组信息管理API
  * @author zhigongzhang
  *
  */
 @Controller
-@RequestMapping("/role")
-public class RoleController {
+@RequestMapping("/userGroup")
+public class UserGroupController {
 	
 	@Autowired
-	private RoleService roleService;
+	private UserGroupService userGroupService;
 	
 	/**
-	 * 自定义条件查询角色信息
+	 * 自定义条件查询分组信息
 	 * @param keyWord
 	 * @param startIndex
 	 * @param pageSize
@@ -50,98 +50,84 @@ public class RoleController {
 			param.put("keyword", keyWord);
 		}
 		if(startIndex > -1) {
-			SearchResult<Role> sr = roleService.query(param, startIndex, pageSize);
+			SearchResult<UserGroup> sr = userGroupService.query(param, startIndex, pageSize);
 			json.put("data", sr.getList());
 			json.put("page", sr.getPage());
 		}else {
-			json.put("data", roleService.query(param));
+			json.put("data", userGroupService.query(param));
 		}
 		return json.toString();
 	}
 	
 	/**
-	 * 根据用户ID查询角色信息
+	 * 根据用户ID查询分组信息
 	 * @param userId
 	 * @return
 	 */
 	@RequestMapping("/queryByUserId")
 	@ResponseBody
-	public String queryByUserId(int userId) {
-		List<Role> list = roleService.queryByUserId(userId);
+	public String queryByUserId(int userId){
+		List<UserGroup> list = userGroupService.queryByUserId(userId);
 		JSONObject json = new JSONObject();
 		json.put("data", list);
 		return json.toString();
 	}
 	
 	/**
-	 * 根据用户分组ID查询角色信息
+	 * 根据分组ID查询分组信息
 	 * @param groupId
 	 * @return
 	 */
 	@RequestMapping("/queryByGroupId")
 	@ResponseBody
-	public String queryByGroupId(int groupId) {
-		List<Role> list = roleService.queryByGroupId(groupId);
+	public String queryByGroupId(int groupId){
+		UserGroup group = userGroupService.queryByGroupId(groupId);
 		JSONObject json = new JSONObject();
-		json.put("data", list);
+		json.put("data", group);
 		return json.toString();
 	}
 	
 	/**
-	 * 根据角色ID查询角色信息
-	 * @param roleId
+	 * 根据分组名称查询分组信息
+	 * @param groupName
 	 * @return
 	 */
-	@RequestMapping("/queryByRoleId")
+	@RequestMapping("/queryByGroupName")
 	@ResponseBody
-	public String queryByRoleId(int roleId) {
-		Role role = roleService.queryByRoleId(roleId);
+	public String queryByGroupName(String groupName){
+		UserGroup group = userGroupService.queryByGroupName(groupName);
 		JSONObject json = new JSONObject();
-		json.put("data", role);
+		json.put("data", group);
 		return json.toString();
 	}
 	
 	/**
-	 * 根据角色名称查询角色信息
-	 * @param roleName
-	 * @return
-	 */
-	@RequestMapping("/queryByRoleName")
-	@ResponseBody
-	public String queryByRoleName(String roleName) {
-		Role role = roleService.queryByRoleName(roleName);
-		JSONObject json = new JSONObject();
-		json.put("data", role);
-		return json.toString();
-	}
-	
-	/**
-	 * 新建角色信息
+	 * 新建分组信息
 	 * @param jsonStr
 	 * @return
 	 */
 	@RequestMapping("/insert")
 	@ResponseBody
 	public String insert(String jsonStr) {
-		Role role = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Role.class);
-		int roleId = roleService.insert(role);
+		UserGroup group = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UserGroup.class);
+		int groupId = userGroupService.insert(group);
 		JSONObject json = new JSONObject();
 		json.put("msg", "新建成功");
-		json.put("userId", roleId);
+		json.put("groupId", groupId);
 		json.put("code", 0);
 		return json.toString();
 	}
 	
 	/**
-	 * 更新角色信息
+	 * 更新分组信息
 	 * @param jsonStr
 	 * @return
 	 */
 	@RequestMapping("/update")
 	@ResponseBody
 	public String update(String jsonStr) {
-		Role role = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Role.class);
-		roleService.update(role);
+		UserGroup group = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UserGroup.class);
+		userGroupService.update(group);
 		JSONObject json = new JSONObject();
 		json.put("msg", "修改成功");
 		json.put("code", 0);
@@ -149,14 +135,14 @@ public class RoleController {
 	}
 	
 	/**
-	 * 根据角色ID删除角色信息
-	 * @param roleId
+	 * 根据分组ID删除分组信息
+	 * @param groupId
 	 * @return
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public String delete(int roleId) {
-		roleService.delete(roleId);
+	public String delete(int groupId) {
+		userGroupService.delete(groupId);
 		JSONObject json = new JSONObject();
 		json.put("msg", "删除成功");
 		json.put("code", 0);
@@ -164,14 +150,30 @@ public class RoleController {
 	}
 	
 	/**
-	 * 根据角色ID删除用户与角色关联信息
+	 * 新建分组与角色关联信息
+	 * @param groupId
 	 * @param roleId
 	 * @return
 	 */
-	@RequestMapping("/deleteRelUserByRoleId")
+	@RequestMapping("/insertRelRole")
 	@ResponseBody
-	public String deleteRelUserByRoleId(int roleId) {
-		roleService.deleteRelUserByRoleId(roleId);
+	public String insertRelRole(int groupId,int roleId) {
+		userGroupService.insertRelRole(groupId, roleId);
+		JSONObject json = new JSONObject();
+		json.put("msg", "新建成功");
+		json.put("code", 0);
+		return json.toString();
+	}
+	
+	/**
+	 * 根据分组ID删除分组与角色关联信息
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping("/deleteRelRoleByGroupId")
+	@ResponseBody
+	public String deleteRelRoleByGroupId(int groupId) {
+		userGroupService.deleteRelRoleByGroupId(groupId);
 		JSONObject json = new JSONObject();
 		json.put("msg", "删除成功");
 		json.put("code", 0);
@@ -179,14 +181,30 @@ public class RoleController {
 	}
 	
 	/**
-	 * 根据角色ID删除用户分组与角色关联信息
-	 * @param roleId
+	 * 新建用户与分组关联信息
+	 * @param groupId
+	 * @param userId
 	 * @return
 	 */
-	@RequestMapping("/deleteRelGroupByRoleId")
+	@RequestMapping("/insertRelUser")
 	@ResponseBody
-	public String deleteRelGroupByRoleId(int roleId) {
-		roleService.deleteRelGroupByRoleId(roleId);
+	public String insertRelUser(int groupId,int userId) {
+		userGroupService.insertRelUser(groupId, userId);
+		JSONObject json = new JSONObject();
+		json.put("msg", "新建成功");
+		json.put("code", 0);
+		return json.toString();
+	}
+	
+	/**
+	 * 根据分组ID删除用户与分组关联信息
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping("/deleteRelUserByGroupId")
+	@ResponseBody
+	public String deleteRelUserByGroupId(int groupId) {
+		userGroupService.deleteRelUserByGroupId(groupId);
 		JSONObject json = new JSONObject();
 		json.put("msg", "删除成功");
 		json.put("code", 0);

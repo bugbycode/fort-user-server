@@ -1,5 +1,6 @@
 package com.bugbycode.service.role.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +25,13 @@ public class RoleServiceImpl implements RoleService {
 		SearchResult<Role> sr = new SearchResult<Role>();
 		Page page = new Page(pageSize, startIndex);
 		int totalCount = roleDao.count(param);
+		List<Role> list = new ArrayList<Role>();
 		if(totalCount > 0) {
 			page.setTotalCount(totalCount);
 			RowBounds rb = new RowBounds(page.getStartIndex(), page.getPageSize());
-			sr.setList(roleDao.query(param, rb));
+			list = roleDao.query(param, rb);
 		}
+		sr.setList(list);
 		sr.setPage(page);
 		return sr;
 	}
@@ -78,8 +81,8 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public void deleteRelUserByRoleId(int userId) {
-		roleDao.deleteRelUserByRoleId(userId);
+	public void deleteRelUserByRoleId(int roleId) {
+		roleDao.deleteRelUserByRoleId(roleId);
 	}
 
 	@Override

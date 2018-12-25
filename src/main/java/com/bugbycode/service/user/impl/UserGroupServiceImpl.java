@@ -1,5 +1,6 @@
 package com.bugbycode.service.user.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +25,13 @@ public class UserGroupServiceImpl implements UserGroupService {
 		SearchResult<UserGroup> sr = new SearchResult<UserGroup>();
 		Page page = new Page(pageSize, startIndex);
 		int totalCount = userGroupDao.count(param);
+		List<UserGroup> list = new ArrayList<UserGroup>();
 		if(totalCount > 0) {
 			page.setTotalCount(totalCount);
 			RowBounds rb = new RowBounds(page.getStartIndex(), page.getPageSize());
-			sr.setList(userGroupDao.query(param, rb));
+			list = userGroupDao.query(param, rb);
 		}
+		sr.setList(list);
 		sr.setPage(page);
 		return sr;
 	}
@@ -70,7 +73,9 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 	@Override
 	public void insertRelRole(int groupId, int roleId) {
-		userGroupDao.insertRelRole(groupId, roleId);
+		if(userGroupDao.checkRelRole(groupId, roleId) == 0) {
+			userGroupDao.insertRelRole(groupId, roleId);
+		}
 	}
 
 	@Override
@@ -80,7 +85,9 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 	@Override
 	public void insertRelUser(int groupId, int userId) {
-		userGroupDao.insertRelUser(groupId, userId);
+		if(userGroupDao.checkRelUser(groupId, userId) == 0) {
+			userGroupDao.insertRelUser(groupId, userId);
+		}
 	}
 
 	@Override

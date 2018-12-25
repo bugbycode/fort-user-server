@@ -27,9 +27,13 @@ public interface UserGroupDao {
 	
 	public void delete(int groupId);
 	
+	public int checkRelRole(int groupId,int roleId);
+	
 	public void insertRelRole(int groupId,int roleId);
 	
 	public void deleteRelRoleByGroupId(int groupId);
+	
+	public int checkRelUser(int groupId,int userId);
 	
 	public void insertRelUser(int groupId,int userId);
 	

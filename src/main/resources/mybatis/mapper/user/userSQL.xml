@@ -132,4 +132,14 @@
 			DELETE from `rel_employee_group` WHERE `emp_id`=#{userId}
 		]]>
 	</delete>
+	<select id="checkRelRole" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(*) FROM `rel_employee_role` WHERE `emp_id` = #{userId} AND `role_id` = #{roleId}
+		]]>
+	</select>
+	<select id="checkRelGroup" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(*) FROM `rel_employee_group` WHERE `emp_id` = #{userId} AND `group_id` = #{groupId}
+		]]>
+	</select>
 </mapper>
