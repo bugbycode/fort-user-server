@@ -11,10 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bugbycode.module.role.Role;
+import com.bugbycode.module.user.User;
 import com.bugbycode.module.user.UserGroup;
+import com.bugbycode.service.role.RoleService;
 import com.bugbycode.service.user.UserGroupService;
+import com.bugbycode.service.user.UserService;
 import com.util.StringUtil;
 import com.util.page.SearchResult;
+import com.util.reg.RegexUtil;
 
 /**
  * 用户分组信息管理API
@@ -27,6 +32,12 @@ public class UserGroupController {
 	
 	@Autowired
 	private UserGroupService userGroupService;
+
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RoleService roleService;
 	
 	/**
 	 * 自定义条件查询分组信息
@@ -110,11 +121,27 @@ public class UserGroupController {
 	@ResponseBody
 	public String insert(String jsonStr) {
 		UserGroup group = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UserGroup.class);
-		int groupId = userGroupService.insert(group);
+		String msg = "新建成功";
+		int code = 0;
+		String name = group.getName();
+		try {
+			if(!RegexUtil.check(RegexUtil.USER_GROUP_NAME_REGEX, name)) {
+				throw new RuntimeException("分组名称格式错误");
+			}
+			UserGroup old = userGroupService.queryByGroupName(name);
+			if(old != null) {
+				throw new RuntimeException("该分组名称已被使用");
+			}
+			userGroupService.insert(group);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
+		int groupId = group.getId();
 		JSONObject json = new JSONObject();
-		json.put("msg", "新建成功");
+		json.put("msg", msg);
 		json.put("groupId", groupId);
-		json.put("code", 0);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -127,10 +154,33 @@ public class UserGroupController {
 	@ResponseBody
 	public String update(String jsonStr) {
 		UserGroup group = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UserGroup.class);
-		userGroupService.update(group);
+		int groupId = group.getId();
+		String msg = "修改成功";
+		int code = 0;
+		String name = group.getName();
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			if(!RegexUtil.check(RegexUtil.USER_GROUP_NAME_REGEX, name)) {
+				throw new RuntimeException("分组名称格式错误");
+			}
+			UserGroup old = userGroupService.queryByGroupId(groupId);
+			if(old == null) {
+				throw new RuntimeException("该分组不存在");
+			}
+			old = userGroupService.queryByGroupName(name);
+			if(!(old == null || old.getId() == groupId)) {
+				throw new RuntimeException("该分组名称已被使用");
+			}
+			userGroupService.update(group);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "修改成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -142,10 +192,24 @@ public class UserGroupController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public String delete(int groupId) {
-		userGroupService.delete(groupId);
+		String msg = "删除成功";
+		int code = 0;
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			UserGroup old = userGroupService.queryByGroupId(groupId);
+			if(old == null) {
+				throw new RuntimeException("该分组不存在");
+			}
+			userGroupService.delete(groupId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -158,10 +222,31 @@ public class UserGroupController {
 	@RequestMapping("/insertRelRole")
 	@ResponseBody
 	public String insertRelRole(int groupId,int roleId) {
-		userGroupService.insertRelRole(groupId, roleId);
+		String msg = "新建成功";
+		int code = 0;
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			UserGroup group = userGroupService.queryByGroupId(groupId);
+			if(group == null) {
+				throw new RuntimeException("分组ID错误");
+			}
+			if(roleId < 1) {
+				throw new RuntimeException("角色ID错误");
+			}
+			Role role = roleService.queryByRoleId(roleId);
+			if(role == null) {
+				throw new RuntimeException("角色ID错误");
+			}
+			userGroupService.insertRelRole(groupId, roleId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "新建成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -173,10 +258,24 @@ public class UserGroupController {
 	@RequestMapping("/deleteRelRoleByGroupId")
 	@ResponseBody
 	public String deleteRelRoleByGroupId(int groupId) {
-		userGroupService.deleteRelRoleByGroupId(groupId);
+		String msg = "删除成功";
+		int code = 0;
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			UserGroup group = userGroupService.queryByGroupId(groupId);
+			if(group == null) {
+				throw new RuntimeException("分组ID错误");
+			}
+			userGroupService.deleteRelRoleByGroupId(groupId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -189,10 +288,31 @@ public class UserGroupController {
 	@RequestMapping("/insertRelUser")
 	@ResponseBody
 	public String insertRelUser(int groupId,int userId) {
-		userGroupService.insertRelUser(groupId, userId);
+		String msg = "新建成功";
+		int code = 0;
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			UserGroup group = userGroupService.queryByGroupId(groupId);
+			if(group == null) {
+				throw new RuntimeException("分组ID错误");
+			}
+			if(userId <= 0) {
+				throw new RuntimeException("用户ID错误");
+			}
+			User user = userService.queryByUserId(userId);
+			if(user == null) {
+				throw new RuntimeException("用户ID错误");
+			}
+			userGroupService.insertRelUser(groupId, userId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "新建成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -204,10 +324,24 @@ public class UserGroupController {
 	@RequestMapping("/deleteRelUserByGroupId")
 	@ResponseBody
 	public String deleteRelUserByGroupId(int groupId) {
-		userGroupService.deleteRelUserByGroupId(groupId);
+		String msg = "删除成功";
+		int code = 0;
+		try {
+			if(groupId < 1) {
+				throw new RuntimeException("分组ID错误");
+			}
+			UserGroup group = userGroupService.queryByGroupId(groupId);
+			if(group == null) {
+				throw new RuntimeException("分组ID错误");
+			}
+			userGroupService.deleteRelUserByGroupId(groupId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 }

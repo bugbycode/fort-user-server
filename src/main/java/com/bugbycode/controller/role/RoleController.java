@@ -15,6 +15,7 @@ import com.bugbycode.module.role.Role;
 import com.bugbycode.service.role.RoleService;
 import com.util.StringUtil;
 import com.util.page.SearchResult;
+import com.util.reg.RegexUtil;
 
 /**
  * 角色信息管理API
@@ -124,11 +125,26 @@ public class RoleController {
 	@ResponseBody
 	public String insert(String jsonStr) {
 		Role role = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Role.class);
-		int roleId = roleService.insert(role);
+		String name = role.getName();
+		int code = 0;
+		String msg = "新建成功";
+		try {
+			if(!RegexUtil.check(RegexUtil.ROLE_NAME_REGEX, name)) {
+				throw new RuntimeException("角色名称格式错误");
+			}
+			Role old = roleService.queryByRoleName(name);
+			if(old != null) {
+				throw new RuntimeException("该角色名称已被使用");
+			}
+			roleService.insert(role);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "新建成功");
-		json.put("userId", roleId);
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("roleId", role.getId());
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -141,10 +157,33 @@ public class RoleController {
 	@ResponseBody
 	public String update(String jsonStr) {
 		Role role = JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Role.class);
-		roleService.update(role);
+		int roleId = role.getId();
+		String name = role.getName();
+		int code = 0;
+		String msg = "修改成功";
+		try {
+			if(roleId < 1) {
+				throw new RuntimeException("角色ID错误");
+			}
+			if(!RegexUtil.check(RegexUtil.ROLE_NAME_REGEX, name)) {
+				throw new RuntimeException("角色名称格式错误");
+			}
+			Role old = roleService.queryByRoleName(name);
+			if(!(old == null || old.getId() == roleId)) {
+				throw new RuntimeException("该角色名称已被使用");
+			}
+			old = roleService.queryByRoleId(roleId);
+			if(old == null) {
+				throw new RuntimeException("角色ID错误");
+			}
+			roleService.update(role);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "修改成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -156,10 +195,24 @@ public class RoleController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public String delete(int roleId) {
-		roleService.delete(roleId);
+		int code = 0;
+		String msg = "删除成功";
+		try {
+			if(roleId < 1) {
+				throw new RuntimeException("角色ID错误");
+			}
+			Role role = roleService.queryByRoleId(roleId);
+			if(role == null) {
+				throw new RuntimeException("角色ID错误");
+			}
+			roleService.delete(roleId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -171,10 +224,24 @@ public class RoleController {
 	@RequestMapping("/deleteRelUserByRoleId")
 	@ResponseBody
 	public String deleteRelUserByRoleId(int roleId) {
-		roleService.deleteRelUserByRoleId(roleId);
+		int code = 0;
+		String msg = "删除成功";
+		try {
+			if(roleId < 1) {
+				throw new RuntimeException("角色ID错误");
+			}
+			Role role = roleService.queryByRoleId(roleId);
+			if(role == null) {
+				throw new RuntimeException("角色ID错误");
+			}
+			roleService.deleteRelUserByRoleId(roleId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 	
@@ -186,10 +253,24 @@ public class RoleController {
 	@RequestMapping("/deleteRelGroupByRoleId")
 	@ResponseBody
 	public String deleteRelGroupByRoleId(int roleId) {
-		roleService.deleteRelGroupByRoleId(roleId);
+		int code = 0;
+		String msg = "删除成功";
+		try {
+			if(roleId < 1) {
+				throw new RuntimeException("角色ID错误");
+			}
+			Role role = roleService.queryByRoleId(roleId);
+			if(role == null) {
+				throw new RuntimeException("角色ID错误");
+			}
+			roleService.deleteRelGroupByRoleId(roleId);
+		}catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
 		JSONObject json = new JSONObject();
-		json.put("msg", "删除成功");
-		json.put("code", 0);
+		json.put("msg", msg);
+		json.put("code", code);
 		return json.toString();
 	}
 }
