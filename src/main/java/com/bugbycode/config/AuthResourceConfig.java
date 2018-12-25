@@ -48,7 +48,7 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/userGroup/delete").hasRole("USER_GROUP_DELETE")
         .antMatchers("/userGroup/insertRelRole","/userGroup/deleteRelRoleByGroupId",
         		"/userGroup/insertRelUser","/userGroup/deleteRelUserByGroupId")
-        .hasAnyRole("USER_GROUP_DELETE","USER_GROUP_INSERT","USER_GROUP_DELETE")
+        .hasAnyRole("USER_GROUP_UPDATE","USER_GROUP_INSERT","USER_GROUP_DELETE")
         .antMatchers("/userGroup/query","/userGroup/queryByUserId",
         		"/userGroup/queryByGroupId","/userGroup/queryByGroupName",
         		"/role/queryByGroupId")
@@ -59,7 +59,7 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/role/update").hasRole("ROLE_UPDATE") //修改角色权限
         .antMatchers("/role/insert").hasRole("ROLE_INSERT") //添加角色权限
         .antMatchers("/role/delete").hasRole("ROLE_DELETE")  //删除角色权限
-        .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLE_DELETE","ROLE_INSERT","ROLE_DELETE")
+        .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLE_UPDATE","ROLE_INSERT","ROLE_DELETE")
         .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
         .hasAnyRole("ROLE_QUERY","ROLE_UPDATE","ROLE_INSERT","ROLE_DELETE")
         ;
