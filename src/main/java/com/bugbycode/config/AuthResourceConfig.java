@@ -34,11 +34,34 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         //用户管理
         .antMatchers("/user/update").hasRole("USER_UPDATE") //修改用户权限
         .antMatchers("/user/insert").hasRole("USER_INSERT") //添加用户权限
-        .antMatchers("/user/delete").hasRole("USER_DELTE")  //删除用户权限
+        .antMatchers("/user/delete").hasRole("USER_DELETE")  //删除用户权限
         .antMatchers("/user/insertRelRole","/user/deleteRelRoleByUserId","/user/insertRelGroup",
         		"/user/deleteRelGroupByUserId")
-        .hasAnyRole("USER_UPDATE","USER_DELTE","USER_INSERT")
-        .antMatchers("/user/queryByUserId","/user/query","/user/queryByUserName") //具备操作用户的任意权限均可查看用户列表以及用户编辑页面
-        .hasAnyRole("USER_QUERY","USER_UPDATE","USER_DELTE","USER_INSERT");
+        .hasAnyRole("USER_UPDATE","USER_DELETE","USER_INSERT")
+        .antMatchers("/user/queryByUserId","/user/query","/user/queryByUserName",
+        		"/role/queryByUserId","/userGroup/queryByUserId") //具备操作用户的任意权限均可查看用户列表以及用户编辑页面
+        .hasAnyRole("USER_QUERY","USER_UPDATE","USER_DELETE","USER_INSERT")
+        
+        //用户分组管理
+        .antMatchers("/userGroup/update").hasRole("USER_GROUP_UPDATE")
+        .antMatchers("/userGroup/insert").hasRole("USER_GROUP_INSERT")
+        .antMatchers("/userGroup/delete").hasRole("USER_GROUP_DELETE")
+        .antMatchers("/userGroup/insertRelRole","/userGroup/deleteRelRoleByGroupId",
+        		"/userGroup/insertRelUser","/userGroup/deleteRelUserByGroupId")
+        .hasAnyRole("USER_GROUP_DELETE","USER_GROUP_INSERT","USER_GROUP_DELETE")
+        .antMatchers("/userGroup/query","/userGroup/queryByUserId",
+        		"/userGroup/queryByGroupId","/userGroup/queryByGroupName",
+        		"/role/queryByGroupId")
+        .hasAnyRole("USER_GROUP_QUERY","USER_GROUP_UPDATE",
+        		"USER_GROUP_DELETE","USER_GROUP_INSERT")
+        
+        //角色管理
+        .antMatchers("/role/update").hasRole("ROLE_UPDATE") //修改角色权限
+        .antMatchers("/role/insert").hasRole("ROLE_INSERT") //添加角色权限
+        .antMatchers("/role/delete").hasRole("ROLE_DELETE")  //删除角色权限
+        .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLE_DELETE","ROLE_INSERT","ROLE_DELETE")
+        .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
+        .hasAnyRole("ROLE_QUERY","ROLE_UPDATE","ROLE_INSERT","ROLE_DELETE")
+        ;
     }
 }
