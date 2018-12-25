@@ -88,13 +88,13 @@
 	</select>
 	<insert id="insert" parameterType="role">
 		<![CDATA[
-			`insert into `role`
+			insert into `role`
             (
              `name`,
              `type`,
              `description`,
              `granted_authority`,
-             `createTime`)
+             `create_time`)
 			values (#{name},
 			        #{type},
 			        #{description},
