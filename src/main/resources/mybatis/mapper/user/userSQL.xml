@@ -8,6 +8,10 @@
 		<result property="username" 	column="username"/>
 		<result property="password" 	column="password"/>
 		<result property="name" 		column="name"/>
+		<result property="groupId" 		column="group_id"/>
+		<result property="groupName" 	column="group_name"/>
+		<result property="roleId" 		column="role_id"/>
+		<result property="roleName" 	column="role_name"/>
 		<result property="email" 		column="email"/>
 		<result property="mobile" 		column="mobile"/>
 		<result property="type" 		column="type"/>
@@ -18,54 +22,66 @@
 	<select id="query" parameterType="java.util.HashMap" resultMap="userResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `username`,
-			  `password`,
-			  `email`,
-			  `mobile`,
-			  `type`,
-			  `status`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee`
+			  e.`id`,
+			  e.`name`,
+			  e.`username`,
+			  e.`password`,
+			  e.`email`,
+			  e.`mobile`,
+			  e.`type`,
+			  e.`status`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  eg.`id` AS group_id,
+			  eg.`name` AS group_name,
+			  r.`id` AS role_id,
+			  r.`name` AS role_name
+			FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id`
 		]]>
 	</select>
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		<![CDATA[
-			SELECT count(`id`) FROM `employee`
+			SELECT count(e.`id`) FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id`
 		]]>
 	</select>
 	<select id="queryByUserName" parameterType="java.lang.String" resultMap="userResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `username`,
-			  `password`,
-			  `email`,
-			  `mobile`,
-			  `type`,
-			  `status`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee` WHERE `username` = #{username}
+			  e.`id`,
+			  e.`name`,
+			  e.`username`,
+			  e.`password`,
+			  e.`email`,
+			  e.`mobile`,
+			  e.`type`,
+			  e.`status`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  eg.`id` AS group_id,
+			  eg.`name` AS group_name,
+			  r.`id` AS role_id,
+			  r.`name` AS role_name
+			FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id` WHERE e.`username` = #{username}
 		]]>
 	</select>
 	<select id="queryByUserId" parameterType="java.lang.Integer" resultMap="userResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `username`,
-			  `password`,
-			  `email`,
-			  `mobile`,
-			  `type`,
-			  `status`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee` WHERE `id` = #{id}
+			  e.`id`,
+			  e.`name`,
+			  e.`username`,
+			  e.`password`,
+			  e.`email`,
+			  e.`mobile`,
+			  e.`type`,
+			  e.`status`,
+			  e.`create_time`,
+			  e.`update_time`,
+			  eg.`id` AS group_id,
+			  eg.`name` AS group_name,
+			  r.`id` AS role_id,
+			  r.`name` AS role_name
+			FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id` WHERE e.`id` = #{id}
 		]]>
 	</select>
 	<insert id="insert" parameterType="user">
@@ -77,6 +93,18 @@
              `email`,
              `mobile`,
              `type`,
+        ]]>
+        <if test="roleId != 0 and roleId != ''">
+	        <![CDATA[     
+	             `role_id`,
+	        ]]>
+        </if>
+        <if test="groupId != 0 and groupId != ''">
+	        <![CDATA[
+	             `group_id`,
+	        ]]>
+        </if>
+        <![CDATA[
              `status`,
              `create_time`)
 			VALUES (#{name},
@@ -85,6 +113,18 @@
 			        #{email},
 			        #{mobile},
 			        #{type},
+		]]>
+		<if test="roleId != 0 and roleId != ''">
+	        <![CDATA[
+				 #{roleId},
+			]]>
+		</if>
+		<if test="groupId != 0 and groupId != ''">
+        	<![CDATA[
+			     #{groupId},
+			]]>
+		</if>
+        <![CDATA[
 			        #{status},
 			        #{createTime})
 		]]>
@@ -102,6 +142,18 @@
 			  `password` = #{password},
 			  `email` = #{email},
 			  `mobile` = #{mobile},
+		]]>
+		<if test="roleId != 0 and roleId != ''">
+	        <![CDATA[
+				 `role_id` = #{roleId},
+			]]>
+		</if>
+		<if test="groupId != 0 and groupId != ''">
+        	<![CDATA[
+			     `emp_id` = #{groupId},
+			]]>
+		</if>
+		<![CDATA[
 			  `status` = #{status},
 			  `update_time` = #{updateTime}
 			WHERE `id` = #{id}

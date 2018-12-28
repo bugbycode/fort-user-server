@@ -6,6 +6,8 @@
 	<resultMap type="userGroup" id="userGroupResult">
 		<result property="id" 			column="id"/>
 		<result property="name" 		column="name"/>
+		<result property="roleId" 		column="role_id"/>
+		<result property="roleName" 	column="role_name"/>
 		<result property="description" 	column="description"/>
 		<result property="createTime" 	column="create_time"/>
 		<result property="updateTime" 	column="update_time"/>
@@ -13,61 +15,81 @@
 	<select id="query" parameterType="java.util.HashMap" resultMap="userGroupResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `description`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee_group`
+			  eg.`id`,
+			  eg.`name`,
+			  r.name AS role_name,
+			  r.id AS role_id,
+			  eg.`description`,
+			  eg.`create_time`,
+			  eg.`update_time`
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id
 		]]>
 	</select>
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		<![CDATA[
-			SELECT COUNT(`id`) FROM `employee_group`
+			SELECT COUNT(eg.`id`) FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id
 		]]>
 	</select>
 	<select id="queryByUserId" parameterType="java.lang.Integer" resultMap="userGroupResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `description`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee_group` WHERE `id` IN (
-				SELECT `group_id` FROM `rel_employee_group` WHERE `emp_id` = #{userId}
-			)
+			  eg.`id`,
+			  eg.`name`,
+			  r.name AS role_name,
+			  r.id AS role_id,
+			  eg.`description`,
+			  eg.`create_time`,
+			  eg.`update_time`
+			FROM `employee` e,`employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id WHERE e.`group_id` = eg.`id` AND e.`id` = #{userId}
 		]]>
 	</select>
 	<select id="queryByGroupId" parameterType="java.lang.Integer" resultMap="userGroupResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `description`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee_group` WHERE `id` = #{groupId}
+			  eg.`id`,
+			  eg.`name`,
+			  r.name AS role_name,
+			  r.id AS role_id,
+			  eg.`description`,
+			  eg.`create_time`,
+			  eg.`update_time`
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id WHERE eg.`id` = #{groupId}
 		]]>
 	</select>
 	<select id="queryByGroupName" parameterType="java.lang.String" resultMap="userGroupResult">
 		<![CDATA[
 			SELECT
-			  `id`,
-			  `name`,
-			  `description`,
-			  `create_time`,
-			  `update_time`
-			FROM `employee_group` WHERE `name` = #{groupName}
+			  eg.`id`,
+			  eg.`name`,
+			  r.name AS role_name,
+			  r.id AS role_id,
+			  eg.`description`,
+			  eg.`create_time`,
+			  eg.`update_time`
+			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id WHERE eg.`name` = #{groupName}
 		]]>
 	</select>
 	<insert id="insert" parameterType="userGroup">
 		<![CDATA[
 			INSERT INTO `employee_group`
             (`name`,
+        ]]>
+        <if test="roleId != 0 and roleId != ''">
+	        <![CDATA[     
+	             `role_id`,
+	        ]]>
+        </if>
+	    <![CDATA[
              `description`,
              `create_time`)
 			VALUES (#{name},
+		]]>
+		<if test="roleId != 0 and roleId != ''">
+	        <![CDATA[
+				 #{roleId},
+			]]>
+		</if>
+		<![CDATA[
 			        #{description},
 			        #{createTime})
 		]]>
@@ -82,6 +104,13 @@
 			UPDATE `employee_group`
 			SET
 			  `name` = #{name},
+		]]>
+		<if test="roleId != 0 and roleId != ''">
+	        <![CDATA[
+				 `role_id` = #{roleId},
+			]]>
+		</if>
+		<![CDATA[
 			  `description` = #{description},
 			  `update_time` = #{updateTime}
 			WHERE `id` = #{id}
