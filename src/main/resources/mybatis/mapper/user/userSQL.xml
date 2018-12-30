@@ -38,11 +38,29 @@
 			  r.`name` AS role_name
 			FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id`
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (e.`name` LIKE CONCAT('%',#{keyword},'%') OR e.username LIKE CONCAT('%',#{keyword},'%') 
+					OR eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.`name` LIKE CONCAT('%',#{keyword},'%')
+					OR e.`email` LIKE CONCAT('%',#{keyword},'%') OR e.`mobile` LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		<![CDATA[
 			SELECT count(e.`id`) FROM `employee` e LEFT JOIN `employee_group` eg ON e.`group_id` = eg.`id` LEFT JOIN `role` r ON e.`role_id` = r.`id`
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (e.`name` LIKE CONCAT('%',#{keyword},'%') OR e.username LIKE CONCAT('%',#{keyword},'%') 
+					OR eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.`name` LIKE CONCAT('%',#{keyword},'%')
+					OR e.`email` LIKE CONCAT('%',#{keyword},'%') OR e.`mobile` LIKE CONCAT('%',#{keyword},'%'))
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="queryByUserName" parameterType="java.lang.String" resultMap="userResult">
 		<![CDATA[
