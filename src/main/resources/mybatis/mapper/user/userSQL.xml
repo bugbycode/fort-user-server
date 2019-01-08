@@ -157,7 +157,13 @@
 			UPDATE `employee`
 			SET 
 			  `name` = #{name},
-			  `password` = #{password},
+		]]>
+		<if test="password != null and password != ''">
+			<![CDATA[
+				  `password` = #{password},
+			]]>
+		</if>
+		<![CDATA[
 			  `email` = #{email},
 			  `mobile` = #{mobile},
 		]]>
