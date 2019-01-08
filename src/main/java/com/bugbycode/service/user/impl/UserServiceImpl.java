@@ -1,6 +1,7 @@
 package com.bugbycode.service.user.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int insert(User user) {
+		user.setCreateTime(new Date());
 		int row = userDao.insert(user);
 		if(row > 0) {
 			return user.getId();
@@ -62,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void update(User user) {
+		user.setUpdateTime(new Date());
 		userDao.update(user);
 	}
 
