@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.bugbycode.dao.base.BaseDao;
@@ -14,6 +16,8 @@ import com.bugbycode.module.user.User;
 @Repository("userDao")
 public class UserDaoImpl extends BaseDao implements UserDao {
 
+	private final Logger logger = LogManager.getLogger(UserDaoImpl.class);
+	
 	@Override
 	public List<User> query(Map<String, Object> param, RowBounds rb) {
 		return getSqlSession().selectList("user.query", param, rb);

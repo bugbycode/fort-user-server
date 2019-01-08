@@ -172,9 +172,19 @@
 				 `role_id` = #{roleId},
 			]]>
 		</if>
+		<if test="roleId == 0 or roleId == ''">
+			<![CDATA[
+				 `role_id` = NULL,
+			]]>
+		</if>
 		<if test="groupId != 0 and groupId != ''">
         	<![CDATA[
-			     `emp_id` = #{groupId},
+			     `group_id` = #{groupId},
+			]]>
+		</if>
+		<if test="groupId == 0 and groupId == ''">
+        	<![CDATA[
+			     `group_id` = NULL,
 			]]>
 		</if>
 		<![CDATA[
