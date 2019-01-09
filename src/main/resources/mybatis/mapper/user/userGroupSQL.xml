@@ -27,7 +27,7 @@
 		<where>
 			<if test="keyword != '' and keyword != null">
 				<![CDATA[
-					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%'
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%')
 						OR eg.`description` LIKE CONCAT('%',#{keyword},'%')
 					) 
 				]]>
@@ -46,7 +46,7 @@
 		<where>
 			<if test="keyword != '' and keyword != null">
 				<![CDATA[
-					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%'
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%')
 						OR eg.`description` LIKE CONCAT('%',#{keyword},'%')
 					) 
 				]]>
