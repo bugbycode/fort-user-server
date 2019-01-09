@@ -39,7 +39,7 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         		"/user/deleteRelGroupByUserId")
         .hasAnyRole("USER_UPDATE","USER_DELETE","USER_INSERT")
         .antMatchers("/user/queryByUserId","/user/query","/user/queryByUserName",
-        		"/role/queryByUserId","/userGroup/queryByUserId") //具备操作用户的任意权限均可查看用户列表以及用户编辑页面
+        		"/user/queryGroup","/user/queryRole") //具备操作用户的任意权限均可查看用户列表以及用户编辑页面
         .hasAnyRole("USER_QUERY","USER_UPDATE","USER_DELETE","USER_INSERT")
         
         //用户分组管理
@@ -51,9 +51,9 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .hasAnyRole("USER_GROUP_UPDATE","USER_GROUP_INSERT","USER_GROUP_DELETE")
         .antMatchers("/userGroup/query","/userGroup/queryByUserId",
         		"/userGroup/queryByGroupId","/userGroup/queryByGroupName",
-        		"/role/queryByGroupId")
+        		"/userGroup/queryRole")
         .hasAnyRole("USER_GROUP_QUERY","USER_GROUP_UPDATE",
-        		"USER_GROUP_DELETE","USER_GROUP_INSERT","USER_UPDATE","USER_INSERT")
+        		"USER_GROUP_DELETE","USER_GROUP_INSERT")
         
         //角色管理
         .antMatchers("/role/update").hasRole("ROLES_UPDATE") //修改角色权限
@@ -61,8 +61,7 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/role/delete").hasRole("ROLES_DELETE")  //删除角色权限
         .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
-        .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE","USER_UPDATE","USER_INSERT",
-        		"USER_GROUP_UPDATE","USER_GROUP_INSERT")
+        .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         ;
     }
 }

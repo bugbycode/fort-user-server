@@ -76,6 +76,36 @@ public class UserGroupController {
 	}
 	
 	/**
+	 * 	根据角色名称查询角色
+	 * @param roleName
+	 * @param startIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping("/queryRole")
+	@ResponseBody
+	public String queryRole(
+			String roleName,
+			@RequestParam(name="startIndex",defaultValue="-1")
+			int startIndex,
+			@RequestParam(name="pageSize",defaultValue="10")
+			int pageSize) {
+		JSONObject json = new JSONObject();
+		Map<String,Object> param = new HashMap<String,Object>();
+		if(StringUtil.isNotBlank(roleName)) {
+			param.put("roleName", roleName);
+		}
+		if(startIndex > -1) {
+			SearchResult<Role> sr = roleService.query(param, startIndex, pageSize);
+			json.put("data", sr.getList());
+			json.put("page", sr.getPage());
+		}else {
+			json.put("data", roleService.query(param));
+		}
+		return json.toString();
+	}
+	
+	/**
 	 * 根据用户ID查询分组信息
 	 * @param userId
 	 * @return

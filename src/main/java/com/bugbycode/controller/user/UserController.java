@@ -72,6 +72,68 @@ public class UserController {
 	}
 	
 	/**
+	 * 根据分组名称查询分组信息
+	 * @param groupName
+	 * @param startIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping("/queryGroup")
+	@ResponseBody
+	public String queryGroup(
+			@RequestParam(name="groupName",defaultValue="")
+			String groupName,
+			@RequestParam(name="startIndex",defaultValue="-1")
+			int startIndex,
+			@RequestParam(name="pageSize",defaultValue="10")
+			int pageSize) {
+		JSONObject json = new JSONObject();
+		Map<String,Object> param = new HashMap<String,Object>();
+		
+		if(StringUtil.isNotBlank(groupName)) {
+			param.put("groupName", groupName);
+		}
+		if(startIndex > -1) {
+			SearchResult<UserGroup> sr = userGroupService.query(param, startIndex, pageSize);
+			json.put("data", sr.getList());
+			json.put("page", sr.getPage());
+		}else {
+			json.put("data", userGroupService.query(param));
+		}
+		return json.toString();
+	}
+	
+	/**
+	 * 	根据角色名称查询角色
+	 * @param roleName
+	 * @param startIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping("/queryRole")
+	@ResponseBody
+	public String queryRole(
+			String roleName,
+			@RequestParam(name="startIndex",defaultValue="-1")
+			int startIndex,
+			@RequestParam(name="pageSize",defaultValue="10")
+			int pageSize) {
+		JSONObject json = new JSONObject();
+		Map<String,Object> param = new HashMap<String,Object>();
+		if(StringUtil.isNotBlank(roleName)) {
+			param.put("roleName", roleName);
+		}
+		if(startIndex > -1) {
+			SearchResult<Role> sr = roleService.query(param, startIndex, pageSize);
+			json.put("data", sr.getList());
+			json.put("page", sr.getPage());
+		}else {
+			json.put("data", roleService.query(param));
+		}
+		return json.toString();
+	}
+	
+	/**
 	 * 根据用户ID查询用户信息
 	 * @param userId
 	 * @return
