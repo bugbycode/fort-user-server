@@ -1,6 +1,7 @@
 package com.bugbycode.service.user.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -58,11 +59,13 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 	@Override
 	public int insert(UserGroup group) {
+		group.setCreateTime(new Date());
 		return userGroupDao.insert(group);
 	}
 
 	@Override
 	public void update(UserGroup group) {
+		group.setUpdateTime(new Date());
 		userGroupDao.update(group);
 	}
 
