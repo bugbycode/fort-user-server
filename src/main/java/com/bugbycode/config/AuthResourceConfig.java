@@ -53,7 +53,7 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         		"/userGroup/queryByGroupId","/userGroup/queryByGroupName",
         		"/role/queryByGroupId")
         .hasAnyRole("USER_GROUP_QUERY","USER_GROUP_UPDATE",
-        		"USER_GROUP_DELETE","USER_GROUP_INSERT")
+        		"USER_GROUP_DELETE","USER_GROUP_INSERT","USER_UPDATE","USER_INSERT")
         
         //角色管理
         .antMatchers("/role/update").hasRole("ROLES_UPDATE") //修改角色权限
@@ -61,7 +61,8 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/role/delete").hasRole("ROLES_DELETE")  //删除角色权限
         .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
-        .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
+        .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE","USER_UPDATE","USER_INSERT",
+        		"USER_GROUP_UPDATE","USER_GROUP_INSERT")
         ;
     }
 }

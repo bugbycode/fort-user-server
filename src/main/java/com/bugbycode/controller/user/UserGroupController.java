@@ -51,6 +51,8 @@ public class UserGroupController {
 	public String query(
 			@RequestParam(name="keyword",defaultValue="")
 			String keyWord,
+			@RequestParam(name="groupName",defaultValue="")
+			String groupName,
 			@RequestParam(name="startIndex",defaultValue="-1")
 			int startIndex,
 			@RequestParam(name="pageSize",defaultValue="10")
@@ -59,6 +61,9 @@ public class UserGroupController {
 		Map<String,Object> param = new HashMap<String,Object>();
 		if(StringUtil.isNotBlank(keyWord)) {
 			param.put("keyword", keyWord);
+		}
+		if(StringUtil.isNotBlank(groupName)) {
+			param.put("groupName", groupName);
 		}
 		if(startIndex > -1) {
 			SearchResult<UserGroup> sr = userGroupService.query(param, startIndex, pageSize);

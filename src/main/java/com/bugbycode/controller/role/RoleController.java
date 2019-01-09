@@ -41,6 +41,8 @@ public class RoleController {
 	public String query(
 			@RequestParam(name="keyword",defaultValue="")
 			String keyWord,
+			@RequestParam(name="roleName",defaultValue="")
+			String roleName,
 			@RequestParam(name="startIndex",defaultValue="-1")
 			int startIndex,
 			@RequestParam(name="pageSize",defaultValue="10")
@@ -49,6 +51,9 @@ public class RoleController {
 		Map<String,Object> param = new HashMap<String,Object>();
 		if(StringUtil.isNotBlank(keyWord)) {
 			param.put("keyword", keyWord);
+		}
+		if(StringUtil.isNotBlank(roleName)) {
+			param.put("roleName", roleName);
 		}
 		if(startIndex > -1) {
 			SearchResult<Role> sr = roleService.query(param, startIndex, pageSize);

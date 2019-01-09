@@ -24,11 +24,35 @@
 			  `update_time`
 			FROM `role`
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (`name` LIKE CONCAT('%',#{keyword},'%') OR `description` LIKE CONCAT('%',#{keyword},'%')) 
+				]]>
+			</if>
+			<if test="roleName != '' and roleName != null">
+				<![CDATA[
+					AND (`name` LIKE CONCAT('%',#{roleName},'%'))
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		<![CDATA[
 			SELECT COUNT(`id`) FROM `role`
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (`name` LIKE CONCAT('%',#{keyword},'%') OR `description` LIKE CONCAT('%',#{keyword},'%')) 
+				]]>
+			</if>
+			<if test="roleName != '' and roleName != null">
+				<![CDATA[
+					AND (`name` LIKE CONCAT('%',#{roleName},'%'))
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="queryByRoleId" parameterType="java.lang.Integer" resultMap="roleResult">
 		<![CDATA[

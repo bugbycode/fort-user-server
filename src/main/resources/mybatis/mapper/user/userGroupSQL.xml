@@ -24,11 +24,39 @@
 			  eg.`update_time`
 			FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%'
+						OR eg.`description` LIKE CONCAT('%',#{keyword},'%')
+					) 
+				]]>
+			</if>
+			<if test="groupName != '' and groupName != null">
+				<![CDATA[
+					AND eg.`name` LIKE CONCAT('%',#{groupName},'%')
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		<![CDATA[
 			SELECT COUNT(eg.`id`) FROM `employee_group` eg LEFT JOIN `role` r ON eg.role_id = r.id
 		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND (eg.`name` LIKE CONCAT('%',#{keyword},'%') OR r.name LIKE CONCAT('%',#{keyword},'%'
+						OR eg.`description` LIKE CONCAT('%',#{keyword},'%')
+					) 
+				]]>
+			</if>
+			<if test="groupName != '' and groupName != null">
+				<![CDATA[
+					AND eg.`name` LIKE CONCAT('%',#{groupName},'%')
+				]]>
+			</if>
+		</where>
 	</select>
 	<select id="queryByUserId" parameterType="java.lang.Integer" resultMap="userGroupResult">
 		<![CDATA[
