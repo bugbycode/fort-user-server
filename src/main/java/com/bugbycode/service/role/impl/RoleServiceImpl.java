@@ -1,6 +1,7 @@
 package com.bugbycode.service.role.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public int insert(Role role) {
+		role.setCreateTime(new Date());
 		int row = roleDao.insert(role);
 		if(row > 0) {
 			return role.getId();
@@ -72,6 +74,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public void update(Role role) {
+		role.setUpdateTime(new Date());
 		roleDao.update(role);
 	}
 
