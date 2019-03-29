@@ -38,9 +38,12 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/user/insertRelRole","/user/deleteRelRoleByUserId","/user/insertRelGroup",
         		"/user/deleteRelGroupByUserId")
         .hasAnyRole("USER_UPDATE","USER_DELETE","USER_INSERT")
+        
         .antMatchers("/user/queryByUserId","/user/query","/user/queryByUserName",
         		"/user/queryGroup","/user/queryRole") //具备操作用户的任意权限均可查看用户列表以及用户编辑页面
-        .hasAnyRole("USER_QUERY","USER_UPDATE","USER_DELETE","USER_INSERT")
+        .hasAnyRole("USER_QUERY","USER_UPDATE","USER_DELETE","USER_INSERT",
+        		"RULE_QUERY","RULE_UPDATE",
+        		"RULE_INSERT","RULE_DELETE")
         
         //用户分组管理
         .antMatchers("/userGroup/update").hasRole("USER_GROUP_UPDATE")
