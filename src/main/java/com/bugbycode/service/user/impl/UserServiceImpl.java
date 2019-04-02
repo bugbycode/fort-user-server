@@ -9,9 +9,11 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bugbycode.dao.token.UserTokenDao;
 import com.bugbycode.dao.user.UserDao;
 import com.bugbycode.module.user.User;
 import com.bugbycode.service.user.UserService;
+import com.util.StringUtil;
 import com.util.page.Page;
 import com.util.page.SearchResult;
 
@@ -20,6 +22,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private UserTokenDao userTokenDao;
 	
 	@Override
 	public SearchResult<User> query(Map<String, Object> param, int startIndex, int pageSize) {
@@ -70,6 +75,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void delete(int userId) {
+		User user = userDao.queryByUserId(userId);
+		if(user == null) {
+			return;
+		}
+		String userName = user.getUsername();
+		String tokenId = userTokenDao.queryRefreshTokenByUserName(userName);
+		if(StringUtil.isNotBlank(tokenId)) {
+			userTokenDao.deleteRefreshTokenByTokenId(tokenId);
+		}
+		userTokenDao.deleteTokenByUserName(userName);
 		userDao.delete(userId);
 	}
 
