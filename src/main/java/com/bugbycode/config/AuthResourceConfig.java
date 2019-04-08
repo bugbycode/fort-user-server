@@ -65,6 +65,9 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
         .antMatchers("/role/deleteRelUserByRoleId","/role/deleteRelGroupByRoleId").hasAnyRole("ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
         .antMatchers("/role/query","/role/queryByUserId","/role/queryByGroupId","/role/queryByRoleId","/role/queryByRoleName")
         .hasAnyRole("ROLES_QUERY","ROLES_UPDATE","ROLES_INSERT","ROLES_DELETE")
+        
+        //API权限
+        .antMatchers("/api/*").hasRole("ADMIN")
         ;
     }
 }
